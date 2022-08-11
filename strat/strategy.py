@@ -25,7 +25,7 @@ class Strategy:
         pass
 
     def get_turn(self, index):
-        raise ValueError("strategy get_description must be defined")
+        raise ValueError("strategy get_turn must be defined")
 
     def get_answer_or_timeout(self, turn):
         start = time.time()

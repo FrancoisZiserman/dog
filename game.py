@@ -12,6 +12,8 @@ class Game:
         self.display = display
 
     def run(self):
+        logging.basicConfig(filename="data/log.txt", filemode="a", level=logging.DEBUG, format='%(asctime)s: %(message)s')
+        logging.info('Start')
         self.start = time.time()
         self.db.start_game(self)
         self.strategy.start()
@@ -26,5 +28,6 @@ class Game:
             if turn_index+1 < self.strategy.get(ConfigKey.TURN_COUNT):
                 self.display.black()
                 time.sleep(self.strategy.get(ConfigKey.INTERVAL))
+        logging.info('End')
         self.db.end_game()
 
