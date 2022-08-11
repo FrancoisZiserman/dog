@@ -1,0 +1,14 @@
+{
+  "dog_name": "Marcel",
+  "strategy": "AllWhite",
+  "path": "",
+  "turn_count": 3,
+  "interval": 0.5,
+  "turn_duration": 5,
+  "repeat_start": 3,
+  "fail_action": "ERROR_SCREEN_AND_STAY",
+  "fail_duration": 1,
+  "full_screen": false,
+  "with_motor": false,
+  "input": "MOUSE"
+}

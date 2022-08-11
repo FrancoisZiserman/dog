@@ -1,0 +1,23 @@
+{
+  "dog_name": "Marcel",
+  "strategy": "FixRandom",
+  "path": "FiveImages",
+  "image_selection": "lemon",
+  "turn_count": 3,
+  "interval": 0.5,
+  "turn_duration": 5,
+  "repeat_start": 3,
+  "fail_action": "ERROR_SCREEN_AND_STAY",
+  "fail_duration": 0.3,
+  "full_screen": false,
+  "with_motor": false,
+  "input": "MOUSE",
+  "reward_parameters": {
+    "left": 2.5,
+    "right": 12,
+    "neutral": 12,
+    "sleep_after_left": 0.2,
+    "sleep_after_right": 0.2,
+    "sleep_after_neutral": 0.2
+  }
+}
