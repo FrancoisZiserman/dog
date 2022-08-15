@@ -13,7 +13,7 @@ class Images:
         self.images = {}
         self.image_keys = None
         self.black = None
-        self.__load(size, path, criteria, root_path)
+        self.__load(int(size), path, criteria, root_path)
 
     def __load(self, size, path, criteria, root_path):
         root_pict_path = self.__get_path(root_path)
