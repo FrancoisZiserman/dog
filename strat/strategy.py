@@ -30,8 +30,9 @@ class Strategy:
     def get_answer_or_timeout(self, turn):
         start = time.time()
         fail_action = self.get(ConfigKey.FAIL_ACTION)
+        turn_duration = self.get(ConfigKey.TURN_DURATION)
         while True:
-            if time.time() - start > self.get(ConfigKey.TURN_DURATION):
+            if time.time() - start > turn_duration:
                 return self.__create_response(Answer.TIMEOUT, start)
             answer = self.__get_answer()
             if answer is None:
@@ -52,6 +53,7 @@ class Strategy:
                             fail_action == FailAction.ERROR_SCREEN_AND_STAY:
                         self.display_error()
                         self.display.turn(turn)
+                        turn_duration += self.get(ConfigKey.FAIL_DURATION)
                     logging.info('{0} : {1}'.format(turn, Response(Answer.FAIL, time.time() - start)))
                     self.db.add_answer(self.__create_response(Answer.FAIL, start))
 
