@@ -24,7 +24,8 @@ class DogConfig:
             return self.__full_screen
         return None
 
-    def __format(self, key, value):
+    @staticmethod
+    def __format(key, value):
         if key == ConfigKey.FAIL_ACTION:
             return FailAction[value]
         if key == ConfigKey.INPUT:

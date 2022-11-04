@@ -1,5 +1,7 @@
 import logging
 import time
+import pathlib
+import pygame
 
 from clic import Clic, ClicMouse
 from common import *
@@ -9,6 +11,8 @@ from rewarddistrib import RewardsDistributor
 
 class Strategy:
     def __init__(self, config, display, db):
+        self.sound_path = str(pathlib.Path().resolve()) + "/resources/sound/"
+
         self.images = None
         self.db = db
         self.config = config
@@ -31,37 +35,58 @@ class Strategy:
         start = time.time()
         fail_action = self.get(ConfigKey.FAIL_ACTION)
         turn_duration = self.get(ConfigKey.TURN_DURATION)
+        self.display_turn(turn)
         while True:
             if time.time() - start > turn_duration:
                 return self.__create_response(Answer.TIMEOUT, start)
             answer = self.__get_answer()
             if answer is None:
                 continue
-            if answer.left and answer.right:
-                if turn.left.ok and turn.right.ok:
-                    return self.__reward(start)
-                else:
-                    continue
+            if (turn.left.ok and turn.right.ok) and (answer.left or answer.right):
+                return self.__reward(start)
             if turn.left.ok and answer.left or turn.right.ok and answer.right:
                 return self.__reward(start)
             if turn.left.ok and answer.right or turn.right.ok and answer.left:
                 if fail_action == FailAction.ERROR_SCREEN_AND_STEP_FORWARD:
-                    self.display_error()
+                    self.display_error_simple()
                     return self.__create_response(Answer.FAIL, start)
                 else:
-                    if fail_action == FailAction.BEEP_AND_STAY or \
-                            fail_action == FailAction.ERROR_SCREEN_AND_STAY:
-                        self.display_error()
-                        self.display.turn(turn)
-                        turn_duration += self.get(ConfigKey.FAIL_DURATION)
                     logging.info('{0} : {1}'.format(turn, Response(Answer.FAIL, time.time() - start)))
                     self.db.add_answer(self.__create_response(Answer.FAIL, start))
+                    if fail_action == FailAction.ERROR_SCREEN_AND_STAY:
+                        turn_duration += self.display_error(turn, start)
+                        self.display_turn(turn)
 
-    def display_error(self):
+    def display_turn(self, turn):
+        self.display.turn(turn)
+        if self.get(ConfigKey.START_SOUND):
+            self.__play_sound("invalid_keypress")
+
+    def display_error_simple(self):
         self.display.error()
-        time.sleep(self.get(ConfigKey.FAIL_DURATION))
-        # sound = pygame.mixer.Sound('../resources/sound/fail_trumpet.mp3')
-        # sound.play()
+        if self.get(ConfigKey.FAIL_SOUND):
+            self.__play_sound("fail_trumpet")
+
+    def display_error(self, turn, start):
+        start_display_error = time.time()
+        self.display_error_simple()
+        time_to_sleep = self.get(ConfigKey.FAIL_DURATION)
+        time_to_sleep_remain = time_to_sleep
+        while time_to_sleep_remain > 0:
+            time.sleep(0.1)
+            time_to_sleep_remain -= 0.1
+            if self.__get_answer() is not None:
+                logging.info('{0} : {1}'.format(turn, Response(Answer.TRY_DURING_ERROR, time.time() - start)))
+                self.db.add_answer(self.__create_response(Answer.TRY_DURING_ERROR, start))
+                time_to_sleep_remain = time_to_sleep
+                self.__play_sound("fail_trumpet")
+        return time.time() - start_display_error
+
+    def __play_sound(self, sound_name):
+        file = f'{self.sound_path}{sound_name}.mp3'
+        pygame.mixer.music.load(file)
+        pygame.mixer.music.play()
+        pygame.event.wait()
 
     def __reward(self, start):
         if self.get(ConfigKey.WITH_MOTOR):

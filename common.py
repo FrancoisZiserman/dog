@@ -5,6 +5,7 @@ class Answer(Enum):
     TIMEOUT = 1
     FAIL = 2
     OK = 3
+    TRY_DURING_ERROR = 4
 
 
 class Input(Enum):
@@ -23,6 +24,8 @@ class ConfigKey(Enum):
     REPEAT_START = "repeat_start"
     FAIL_ACTION = "fail_action"
     FAIL_DURATION = "fail_duration"
+    FAIL_SOUND = "fail_sound"
+    START_SOUND = "start_sound"
     FULL_SCREEN = "full_screen"
     WITH_MOTOR = "with_motor"
     INPUT = "input"
@@ -31,9 +34,7 @@ class ConfigKey(Enum):
 
 class FailAction(Enum):
     ERROR_SCREEN_AND_STEP_FORWARD = 1
-    BEEP_AND_STAY = 2
-    ERROR_SCREEN_AND_STAY = 3
-    STAY_IN_SILENCE = 4
+    ERROR_SCREEN_AND_STAY = 2
 
 
 class Response:

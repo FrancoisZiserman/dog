@@ -4,6 +4,8 @@ import pygame
 class Display:
     def __init__(self, full_screen, error_color=(0, 0, 255)):
         self.error_color = error_color
+        pygame.mixer.pre_init(44100, 16, 2, 4096)  # frequency, size, channels, buffersize
+        pygame.mixer.init()
         pygame.init()
         if full_screen:
             self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)

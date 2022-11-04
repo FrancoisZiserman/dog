@@ -20,7 +20,6 @@ class Game:
         for turn_index in range(self.strategy.get(ConfigKey.TURN_COUNT)):
             turn = self.strategy.get_turn(turn_index)
             self.db.start_turn(turn)
-            self.display.turn(turn)
             ret = self.strategy.get_answer_or_timeout(turn)
             logging.info('{0} : {1}'.format(turn, ret))
             self.db.add_answer(ret)
